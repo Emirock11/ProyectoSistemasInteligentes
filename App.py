@@ -1,7 +1,7 @@
 from tkinter import *
 
 class Bag:
-    def __init__(self, length, height, width):
+    def __init__(self, height, length, width):
         self.length = length
         self.height = height
         self.width = width
@@ -17,9 +17,10 @@ class Bags:
         self.width = width
 
 class Product:
-    def __init__(self, name, weight, length, height, width, type, fragile, temperature):  
+    def __init__(self, name, weight, price, height, length, width, type, fragile, temperature):  
         self.name = name
         self.weight = weight
+        self.price = price
         self.length = length
         self.height = height
         self.width = width
@@ -28,10 +29,11 @@ class Product:
         self.temperature = temperature
 
 class Products:
-    def __init__(self, name, quantity, weight, length, height, width, type, fragile, temperature):
+    def __init__(self, name, quantity, weight, price, length, height, width, type, fragile, temperature):
         self.name = name
         self.quantity = quantity
         self.weight = weight
+        self.price = price
         self.length = length
         self.height = height
         self.width = width
@@ -42,7 +44,7 @@ class Products:
 
 class App:
     def __init__(self):
-        self.productTypes = ["Pasta", "Semillas", "Carne", "Fruta/verdura", "Embotellado", "Limpieza / aseo personal", "Caja"]
+        self.productTypes = ["Comida / bebida", "Limpieza / aseo personal", "Otro"]
         self.temperaturesList = ["No aplica", "Caliente", "Frio / congelado"]
         self.bagsList = []
         self.allProductsList =[]
@@ -84,6 +86,8 @@ class App:
                     self.entryProductName.insert(0, self.allProductsList[self.idProducts].name)
                     self.entryProductQuantity.delete(0, END)
                     self.entryProductQuantity.insert(0, self.allProductsList[self.idProducts].quantity)
+                    self.entryProductPrice.delete(0, END)
+                    self.entryProductPrice.insert(0, self.allProductsList[self.idProducts].price)
                     self.entryProductWeight.delete(0, END)
                     self.entryProductWeight.insert(0, self.allProductsList[self.idProducts].weight)
                     self.entryProductLength.delete(0, END)
@@ -99,7 +103,6 @@ class App:
                         self.varCheckBPT.set(1)
                     else:
                         self.varCheckBPT.set(0)
-                    # Mostrar las elecciones previas para el tipo del producto, si es fragil o no y su temperatura
                     self.showEditButtons()
                 else:
                     self.allProductsList.pop(self.idProducts)
@@ -116,12 +119,13 @@ class App:
             fragile = False
             if self.varCheckBPT.get() == 1:
                 fragile = True
-            products = Products(self.entryProductName.get(), int(self.entryProductQuantity.get()), float(self.entryProductWeight.get()), float(self.entryProductLength.get()), float(self.entryProductHeight.get()), float(self.entryProductWidth.get()), str(self.varProductType.get()), fragile, str(self.varProductTemp.get()))
+            products = Products(self.entryProductName.get(), int(self.entryProductQuantity.get()), float(self.entryProductWeight.get()), float(self.entryProductPrice.get()), float(self.entryProductLength.get()), float(self.entryProductHeight.get()), float(self.entryProductWidth.get()), str(self.varProductType.get()), fragile, str(self.varProductTemp.get()))
             self.allProductsList.append(products)
             self.hideErrors()
             self.addObject2ListBox()
             self.entryProductName.delete(0, END)
             self.entryProductQuantity.delete(0, END)
+            self.entryProductPrice.delete(0, END)
             self.entryProductWeight.delete(0, END)
             self.entryProductLength.delete(0, END)
             self.entryProductHeight.delete(0, END)
@@ -138,6 +142,7 @@ class App:
             IDSelection = self.idProducts
             self.allProductsList[IDSelection].name = str(self.entryProductName.get())
             self.allProductsList[IDSelection].quantity = int(self.entryProductQuantity.get())
+            self.allProductsList[IDSelection].price = float(self.entryProductPrice.get())
             self.allProductsList[IDSelection].weight = float(self.entryProductWeight.get())
             self.allProductsList[IDSelection].length = float(self.entryProductLength.get())
             self.allProductsList[IDSelection].height = float(self.entryProductHeight.get())
@@ -168,13 +173,15 @@ class App:
         self.entryProductName = Entry(root2, highlightthickness=2, highlightcolor=self.green, font=("Arial", 16), width=17)
         labelProductQuantity = Label(root2, text="Cantidad: ", background="#FFFFFF", font=("Arial", 16))
         self.entryProductQuantity = Entry(root2, highlightthickness=2, highlightcolor=self.green, font=("Arial", 16), width=4)
+        labelProductPrice = Label(root2, text="Precio: ", background="#FFFFFF", font=("Arial", 16))
+        self.entryProductPrice = Entry(root2, highlightthickness=2, highlightcolor=self.green, font=("Arial", 16), width=6)
         labelProductWeight = Label(root2, text="Ingresa peso aprox. del producto en Kg: ", background="#FFFFFF", font=("Arial", 16))
         self.entryProductWeight = Entry(root2, highlightthickness=2, highlightcolor=self.green, font=("Arial", 16), width=5)
         labelProductSize = Label(root2, text="Ingresa tamaño aprox. del producto en cm: ", background="#FFFFFF", font=("Arial", 16))
+        labelProductHeight = Label(root2, text="Altura: ", background="#FFFFFF", font=("Arial", 16))
+        self.entryProductHeight = Entry(root2, highlightthickness=2, highlightcolor=self.green, font=("Arial", 16), width=4)
         labelProductLength = Label(root2, text="Largo: ", background="#FFFFFF", font=("Arial", 16))
         self.entryProductLength = Entry(root2, highlightthickness=2, highlightcolor=self.green, font=("Arial", 16), width=4)
-        labelProductHeight = Label(root2, text="Alto: ", background="#FFFFFF", font=("Arial", 16))
-        self.entryProductHeight = Entry(root2, highlightthickness=2, highlightcolor=self.green, font=("Arial", 16), width=4)
         labelProductWidth = Label(root2, text="Ancho: ", background="#FFFFFF", font=("Arial", 16))
         self.entryProductWidth = Entry(root2, highlightthickness=2, highlightcolor=self.green, font=("Arial", 16), width=4)
         labelProductType = Label(root2, text="Tipo de producto: ", background="#FFFFFF", font=("Arial", 16))
@@ -209,17 +216,19 @@ class App:
         labelWelcome.place(x=0, y=0)
         labelProductName.place(x=30, y=63)
         self.entryProductName.place(x=30, y=95)
-        labelProductQuantity.place(x=272, y=80)
-        self.entryProductQuantity.place(x=369, y=80)
+        labelProductQuantity.place(x=272, y=60)
+        self.entryProductQuantity.place(x=369, y=60)
+        labelProductPrice.place(x=272, y=100)
+        self.entryProductPrice.place(x=347, y=100)
         labelProductWeight.place(x=30, y=155)
         self.entryProductWeight.place(x=410, y=155)
         labelProductSize.place(x=30, y=210)
-        labelProductLength.place(x=30, y=245)
-        self.entryProductLength.place(x=99, y=245)
-        labelProductHeight.place(x=168, y=245)
-        self.entryProductHeight.place(x=217, y=245)
-        labelProductWidth.place(x=293, y=245)
-        self.entryProductWidth.place(x=365, y=245)
+        labelProductHeight.place(x=30, y=245)
+        self.entryProductHeight.place(x=99, y=245)
+        labelProductLength.place(x=168, y=245)
+        self.entryProductLength.place(x=235, y=245)
+        labelProductWidth.place(x=303, y=245)
+        self.entryProductWidth.place(x=375, y=245)
         labelProductType.place(x=30, y=308)
         menuProductType.place(x=200, y=308)
         checkBProductType.place(x=400, y=310)
@@ -259,9 +268,9 @@ class App:
         else:
             self.prepareBags()
             self.prepareProducts()
-            self.preparedProducts.sort(key=lambda x: x.weight, reverse=True)
+            self.preparedProducts.sort(key=lambda x: (x.weight, x.temperature), reverse=True)
             for product in self.preparedProducts:
-                print(product.name+" - Peso: "+str(product.weight))
+                print(product.name+" - Peso: "+str(product.weight)+" - Temperatura: "+product.temperature)
             
 
 
@@ -298,7 +307,7 @@ class App:
                 return False
             return True
         elif self.activeWindow == 2:
-            if len(self.entryProductName.get()) == 0 or len(self.entryProductQuantity.get()) == 0 or len(self.entryProductWeight.get()) == 0 or len(self.entryProductLength.get()) == 0 or len(self.entryProductHeight.get()) == 0 or len(self.entryProductWidth.get()) == 0:
+            if len(self.entryProductName.get()) == 0 or len(self.entryProductQuantity.get()) == 0 or len(self.entryProductWeight.get()) == 0 or len(self.entryProductPrice.get()) == 0 or len(self.entryProductLength.get()) == 0 or len(self.entryProductHeight.get()) == 0 or len(self.entryProductWidth.get()) == 0:
                 self.hideErrors()
                 self.labelErrorMissing.place(x=0, y=430)
                 return False
@@ -320,6 +329,7 @@ class App:
             else:
                 float(self.entryProductQuantity.get())
                 float(self.entryProductWeight.get())
+                float(self.entryProductPrice.get())
                 float(self.entryProductLength.get())
                 float(self.entryProductHeight.get())
                 float(self.entryProductWidth.get())
@@ -332,7 +342,7 @@ class App:
         if self.activeWindow == 1:
             if len(self.bagsList) > 0:
                 for bag in self.bagsList:
-                    strBag = str(bag.quantity)+" bolsa/s, largo: "+str(bag.length)+" cm, alto: "+str(bag.height)+" cm, ancho: "+str(bag.width)+" cm."
+                    strBag = str(bag.quantity)+" bolsa/s, altura: "+str(bag.height)+" cm, largo: "+str(bag.length)+" cm, ancho: "+str(bag.width)+" cm."
                     self.listBoxBags.insert("end", strBag)
         elif self.activeWindow == 2:
             if len(self.allProductsList) > 0:
@@ -342,7 +352,7 @@ class App:
 
     def addObject2ListBox(self):
         if self.activeWindow == 1:
-            strBag = str(self.entryBagQuantity.get())+" bolsa/s, largo: "+str(self.entryBagLength.get())+" cm, alto: "+str(self.entryBagHeight.get())+" cm, ancho: "+str(self.entryBagWidth.get())+" cm."
+            strBag = str(self.entryBagQuantity.get())+" bolsa/s, altura: "+str(self.entryBagHeight.get())+" cm, largo: "+str(self.entryBagLength.get())+" cm, ancho: "+str(self.entryBagWidth.get())+" cm."
             self.listBoxBags.insert(END, strBag)
         elif self.activeWindow == 2:
             strProd = str(self.entryProductName.get())+" - Cantidad: "+str(self.entryProductQuantity.get())+"."
@@ -382,6 +392,7 @@ class App:
             self.entryProductName.delete(0, END)
             self.entryProductQuantity.delete(0, END)
             self.entryProductWeight.delete(0, END)
+            self.entryProductPrice.delete(0, END)
             self.entryProductLength.delete(0, END)
             self.entryProductHeight.delete(0, END)
             self.entryProductWidth.delete(0, END)
@@ -410,10 +421,10 @@ class App:
         labelBagQuantity = Label(root1, text="Ingresa la cantidad de bolsas: ", background="#FFFFFF", font=("Arial", 16))
         self.entryBagQuantity = Entry(root1, highlightthickness=2, highlightcolor=self.green, font=("Arial", 16), width=7)
         labelBagSize = Label(root1, text="Ingresa el tamaño de las bolsas en centimetros: ", background="#FFFFFF", font=("Arial", 16))
-        labelBagLong = Label(root1, text="Largo: ", background="#FFFFFF", font=("Arial", 16))
-        self.entryBagLength = Entry(root1, highlightthickness=2, highlightcolor=self.green, font=("Arial", 16), width=7)
-        labelBagHigh = Label(root1, text="Alto: ", background="#FFFFFF", font=("Arial", 16))
+        labelBagHeight = Label(root1, text="Altura: ", background="#FFFFFF", font=("Arial", 16))
         self.entryBagHeight = Entry(root1, highlightthickness=2, highlightcolor=self.green, font=("Arial", 16), width=7)
+        labelBagLength = Label(root1, text="Largo: ", background="#FFFFFF", font=("Arial", 16))
+        self.entryBagLength = Entry(root1, highlightthickness=2, highlightcolor=self.green, font=("Arial", 16), width=7)
         labelBagWidth = Label(root1, text="Ancho: ", background="#FFFFFF", font=("Arial", 16))
         self.entryBagWidth = Entry(root1, highlightthickness=2, highlightcolor=self.green, font=("Arial", 16), width=7)
         labelBGList = Label(root1, text="BG", width=60, height=22, background=self.green)
@@ -436,10 +447,10 @@ class App:
         labelBagQuantity.place(x=30, y=80)
         self.entryBagQuantity.place(x=320, y=80)
         labelBagSize.place(x=30, y=160)
-        labelBagLong.place(x=30, y=210)
-        self.entryBagLength.place(x=100, y=210)
-        labelBagHigh.place(x=30, y=260)
-        self.entryBagHeight.place(x=80, y=260)
+        labelBagHeight.place(x=30, y=210)
+        self.entryBagHeight.place(x=100, y=210)
+        labelBagLength.place(x=30, y=260)
+        self.entryBagLength.place(x=100, y=260)
         labelBagWidth.place(x=30, y=310)
         self.entryBagWidth.place(x=105, y=310)
         labelBGList.place(x=515, y=61)
@@ -527,7 +538,7 @@ class App:
         for i in range(len(self.bagsList)):
             currentBag = self.bagsList[i]
             for j in range(currentBag.quantity):
-                bag = Bag(currentBag.length, currentBag.height, currentBag.width)
+                bag = Bag(currentBag.height, currentBag.length, currentBag.width)
                 self.preparedBags.append(bag)
 
     def prepareProducts(self):
@@ -535,13 +546,8 @@ class App:
         for i in range(len(self.allProductsList)):
             currentProduct = self.allProductsList[i]
             for j in range(currentProduct.quantity):
-                product = Product(currentProduct.name, currentProduct.weight , currentProduct.length, currentProduct.height, currentProduct.width, currentProduct.type, currentProduct.fragile, currentProduct.temperature)
+                product = Product(currentProduct.name, currentProduct.weight, currentProduct.price, currentProduct.height, currentProduct.length, currentProduct.width, currentProduct.type, currentProduct.fragile, currentProduct.temperature)
                 self.preparedProducts.append(product)
-
-  
-
-
-
 
 
 initApp = App()
